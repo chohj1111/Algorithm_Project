@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class ReferenceDNA {
 
-    static int str_Size = 10000000;
+    static int str_Size;
 	
 	/*
     void형 createRefDNA 함수
@@ -69,7 +69,7 @@ public class ReferenceDNA {
         MyDNA.txt 파일 생성
     */
     static void getMyReference(String FILEPATH) {
-        char[] myDNA = new char[str_Size];   // My DNA Reference 저장
+        char myDNA[] = new char[str_Size];   // My DNA Reference 저장
         int myDNA_len;                       // My DNA Reference 길이
         char charset[] = new String("ATGC").toCharArray(); // string에 들어갈 charset
         int SNP_num = str_Size/100*3;      // My DNA Sequence 생성할 때 원본 sequence와 다른 문자 개수
@@ -87,7 +87,7 @@ public class ReferenceDNA {
             e.printStackTrace();
         }
         myDNA_len = myDNA.length;   // myDNA의 길이
-
+        System.out.println(myDNA_len);
         // random seed
         Random r = new Random();
 
@@ -560,10 +560,15 @@ public class ReferenceDNA {
         n = sc.nextInt();
 
         // 읽을 파일
-        String file_path = "ReferenceDNA.txt";
+        String file_path = "sequence.fasta";
+        try { // get the size of input file
+            File file = new File(file_path);
+            str_Size= (int)file.length();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        
-        createRefDNA(); // Reference DNA 생성
+        //createRefDNA(); // Reference DNA 생성
         getMyReference(file_path); // My Reference DNA 생성 
         makeSpectrum(k, n);        // ShortRead 생성
 
@@ -578,7 +583,7 @@ public class ReferenceDNA {
 
         // trivial 알고리즘 시간 측정
         beforeTime = System.currentTimeMillis();
-        Trivial(file_path, k, n);
+        //Trivial(file_path, k, n);
         afterTime = System.currentTimeMillis();
         System.out.println("Trivial Method 수행시간 : " + secDiffTime + "s");
         Accuracy();
