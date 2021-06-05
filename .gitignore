@@ -111,3 +111,7 @@ modules.xml
 # End of https://www.toptal.com/developers/gitignore/api/java,pycharm+iml
 /.idea/
 
+/input/Original.txt
+/input/sequence.fasta
+/refer/MyDNA.txt
+/refer/myDNASequence.txt

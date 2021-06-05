@@ -1,13 +1,10 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class ReferenceDNA {
 
-    static int str_Size;
+    static int file_size;
 	
 	/*
     void형 createRefDNA 함수
@@ -18,14 +15,14 @@ public class ReferenceDNA {
     	생성한 reference DNA로 "ReferenceDNA.txt"로 출력
     */
     static void createRefDNA() {
-        char[] referenceDNA = new char[str_Size];  // reference DNA 저장할 변수
+        char[] referenceDNA = new char[file_size];  // reference DNA 저장할 변수
         int tmp, i, j;
         char tmpChar = '0';
         Random r = new Random();
         // 기존에 건너뜀 없이 일렬로 저장되던 데이터를 4칸씩 건너뛰면서 저장하게 변경
         for (i = 0; i < 4; i++) {
             j = i;
-            while (j < str_Size) {
+            while (j < file_size) {
                 tmp = r.nextInt(4);
                 switch (tmp) {
                     case (0):
@@ -47,7 +44,7 @@ public class ReferenceDNA {
         }
 
         // ReferenceDNA 출력
-        File file = new File("ReferenceDNA.txt");
+        File file = new File("input/ReferenceDNA.txt");
         String strForFile = new String(referenceDNA);
 
         try {
@@ -69,25 +66,28 @@ public class ReferenceDNA {
         MyDNA.txt 파일 생성
     */
     static void getMyReference(String FILEPATH) {
-        char myDNA[] = new char[str_Size];   // My DNA Reference 저장
+        char myDNA[] = new char[file_size];   // My DNA Reference 저장
         int myDNA_len;                       // My DNA Reference 길이
         char charset[] = new String("ATGC").toCharArray(); // string에 들어갈 charset
-        int SNP_num = str_Size/100*3;      // My DNA Sequence 생성할 때 원본 sequence와 다른 문자 개수
+        int SNP_num = file_size/100*3;      // My DNA Sequence 생성할 때 원본 sequence와 다른 문자 개수
 
         // FILEPATH로부터 Reference DNA 입력
-        String temp_str = new String("");
+        StringBuilder stringBuilder = new StringBuilder();
+        String temp_str = "";
         try {
             FileReader fr = new FileReader(FILEPATH);
             BufferedReader br = new BufferedReader(fr);
 
-            while ((temp_str = br.readLine()) != null) {
-                myDNA = temp_str.toCharArray();
+            while ((temp_str = br.readLine()) != null) { // read line from file
+                stringBuilder.append(temp_str);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        myDNA = stringBuilder.toString().toCharArray(); //  convert StringBuilder to char array
+
         myDNA_len = myDNA.length;   // myDNA의 길이
-        System.out.println(myDNA_len);
+
         // random seed
         Random r = new Random();
 
@@ -101,7 +101,7 @@ public class ReferenceDNA {
 
         // 위에서 일부분을 변경한 My DNA Reference로 "MyDNA.txt" 생성
         String myDNA_str = new String(myDNA);
-        File file = new File("MyDNA.txt");
+        File file = new File("refer/MyDNA.txt");
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write(myDNA_str);
@@ -117,12 +117,11 @@ public class ReferenceDNA {
      입력 :
         sequence의 길이 int형 k
         sequence의 개수 int형 n
-        원본 data의 경로 = FILEPATH
      출력 :
         myDNASequence.txt 파일 출력
     */
     static void makeSpectrum(int k, int n) {
-        char[] myDNA = new char[str_Size];  // my DNA reference 저장
+        char[] myDNA = new char[file_size];  // my DNA reference 저장
         int myDNA_len;                      // My DNA Reference 길이
         ArrayList<String> myDNA_sequence = new ArrayList<String>();  // my DNA reference를 통해
                                                                      // 생성한 shortRead를 Arraylist로 저장
@@ -130,7 +129,7 @@ public class ReferenceDNA {
         // My DNA Reference 파일로 입력 받기
         String temp_str = new String("");
         try {
-            FileReader fr = new FileReader("MyDNA.txt");
+            FileReader fr = new FileReader("refer/MyDNA.txt");
             BufferedReader br = new BufferedReader(fr);
 
             while ((temp_str = br.readLine()) != null) {
@@ -160,7 +159,7 @@ public class ReferenceDNA {
 
         // 위에서 생성한 shortRead로 "MyDNAsequence.txt" 생성
         try {
-            FileWriter writer = new FileWriter("myDNASequence.txt");
+            FileWriter writer = new FileWriter("refer/myDNASequence.txt");
             for (String str : myDNA_sequence) {
                 writer.write(str + System.lineSeparator());
             }
@@ -186,14 +185,12 @@ public class ReferenceDNA {
                              // j : reference DNA index
                              // m : sequence index
                              // SNP : reference DNA와 sequence 사이 miss match count
-        char[] referenceDNA = new char[str_Size]; // Reference DNA
+        char[] referenceDNA = new char[file_size]; // Reference DNA
         int reference_len;                        // referenceDNA length
-        char[] restoreDNA = new char[str_Size];   // 복원 후 문자열
+        char[] restoreDNA = new char[file_size];   // 복원 후 문자열
         
         // 복원될 문자열의 빈부분을 '?'로 채우기
-        for (i = 0; i < str_Size; i++) {
-            restoreDNA[i] = '?';
-        }
+        Arrays.fill(referenceDNA,'?');
 
         // FILEPATH로부터 Reference DNA 입력
         String temp_str = new String("");
@@ -213,22 +210,23 @@ public class ReferenceDNA {
         // "MyDNAsequence.txt" 입력받기
         String sequence = "";
         try {
-            File file = new File("MyDNAsequence.txt");
+            File file = new File("refer/MyDNAsequence.txt");
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             while ((sequence = bufferedReader.readLine()) != null) {    // 한 줄씩 입력받음
-            	for(j = 0; j < str_Size - k + 1; j++) {  // reference DNA 순회
+            	for(j = 0; j < file_size - k + 1; j++) {  // reference DNA 순회
             		SNP = 0; // miss match 0으로 set
             		// 문자열 비교
             		for(m = 0; m < k; m++) {
             			if(referenceDNA[j + m]!=sequence.charAt(m)) {  // 다른 문자 check
             				SNP++;
+                            // 스닙이 4개 보다 더 나오면 불일치이므로 바로 break
+                            if(SNP > 4) {
+                                break;
+                            }
             			}
-            			// 스닙이 4개 보다 더 나오면 불일치이므로 바로 break
-            			if(SNP > 4) {
-            				break;
-            			}
+
             		}
             		// reference와 shortRead 비교 이후에도 스닙이 4개 이하일때 restoreDNA에 값 저장
             		if (SNP <= 4) {
@@ -244,8 +242,8 @@ public class ReferenceDNA {
         }
 
 
-        // sequence의 내용을 위치에 맞게 기록한 restoreDNA를 "RestoreDNA.txt"로 출력
-        File file = new File("RestoreDNA.txt");
+        // sequence의 내용을 위치에 맞게 기록한 restoreDNA를 "trivialRestoreDNA.txt"로 출력
+        File file = new File("output/trivialRestoreDNA.txt");
         String strForFile = new String(restoreDNA);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -282,7 +280,7 @@ public class ReferenceDNA {
         //인덱스는 인접리스트 방식으로 구현
         LinkedList<Integer> indexNode[] = new LinkedList[size];
 
-        // "ReferenceDNA.txt" 입력받기
+        // FILEPATH로 reference DNA 입력받기
         String temp_str = new String("");
         try {
             FileReader fr = new FileReader(FILEPATH);
@@ -353,25 +351,19 @@ public class ReferenceDNA {
            없음
        */
     static void NewAlgorithm(String FILEPATH, int k, int n) {
-        int i, j, m, h, indNum, SNP, count, start, end;
+        int j, m, h, indNum, SNP, count, start, end;
         int tmp = 0;
         char[] restoreDNA = new char[10000000];
         char[] referenceDNA = new char[10000000];
         String sequence = "";
         ArrayList<Integer> findList = new ArrayList<Integer>();
 
-        // index생성
-
-        LinkedList<Integer>[] index = createIndex(FILEPATH);
+        LinkedList<Integer>[] index = createIndex(FILEPATH); // 각 hash 값을 갖는 부분 문자열의 시작 위치 저장
 
         // 복원될 문자열의 빈부분을 '?'로 채우기
-        for (i = 0; i < 10000000; i++) {
-            restoreDNA[i] = '?';
-        }
+        Arrays.fill(referenceDNA,'?');
 
-
-        // 비교에 이용할 "ReferenceDNA.txt" 입력받기
-        // "ReferenceDNA.txt" 입력받기
+        // FILEPATH로 비교에 이용할 reference DNA 입력받기
         String temp_str = new String("");
         try {
             FileReader fr = new FileReader(FILEPATH);
@@ -387,7 +379,7 @@ public class ReferenceDNA {
 
         // "MyDNAsequence.txt" 입력받기
         try {
-            File file = new File("MyDNAsequence.txt");
+            File file = new File("refer/MyDNAsequence.txt");
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -476,7 +468,7 @@ public class ReferenceDNA {
 
         // sequence의 내용을 위치에 맞게 기록한 restoreDNA를 "RestoreDNA.txt"로 출력
         // ReferenceDNA 출력
-        File file = new File("RestoreDNA.txt");
+        File file = new File("output/NewRestoreDNA.txt");
         String strForFile = new String(restoreDNA);
 
         try {
@@ -492,22 +484,22 @@ public class ReferenceDNA {
     }
     /*
     void형 Accuracy 함수
-    MyDNA와 RestoreDNA를 비교하여 정확도를 측정
+    MyDNA와 RestoreDNA(restore_file_path)를 비교하여 정확도를 측정
     입력 :
-        없음
+        restore_file_path = 알고리즘으로 복원된 file 경로
     출력 :
         없음
     */
-    static void Accuracy() {
+    static void Accuracy(String restore_file_path) {
         int i;
         int accuracy = 0;
-        char[] myDNA = new char[str_Size+1];
-        char[] restoreDNA = new char[str_Size+1];
+        char[] myDNA = new char[file_size+1];
+        char[] restoreDNA = new char[file_size+1];
 
         // "MyDNA.txt"입력받기
         String theString = new String("");
         try {
-            File file = new File("myDNA.txt");
+            File file = new File("refer/myDNA.txt");
             Scanner scanner = new Scanner(file);
 
             theString = scanner.nextLine();
@@ -524,7 +516,7 @@ public class ReferenceDNA {
         // "RestoreDNA.txt"입력받기
         theString = "";
         try {
-            File file = new File("RestoreDNA.txt");
+            File file = new File(restore_file_path);
             Scanner scanner = new Scanner(file);
 
             theString = scanner.nextLine();
@@ -538,7 +530,7 @@ public class ReferenceDNA {
         }
 
         // "MyDNA.txt"와 "RestoreDNA.txt"를 하나씩 비교하여 같은부분이 있으면 accuracy를 1증가
-        for (i = 0; i < str_Size; i++) {
+        for (i = 0; i < file_size; i++) {
             if (myDNA[i] == restoreDNA[i]) {
                 accuracy++;
             }
@@ -546,7 +538,7 @@ public class ReferenceDNA {
 
         // 일치율 출력
         System.out.println("일치율 : ");
-        System.out.println(accuracy + " / "+str_Size);
+        System.out.println(accuracy + " / "+file_size);
     }
 
     public static void main(String[] args) {
@@ -555,15 +547,19 @@ public class ReferenceDNA {
 
         // k와 n 입력 
         System.out.print("k : ");
-        k = sc.nextInt();
+        //k = sc.nextInt();
+        k = 70;
+
         System.out.print("n : ");
-        n = sc.nextInt();
+        //n = sc.nextInt();
+        n = 5714285;
+
 
         // 읽을 파일
-        String file_path = "sequence.fasta";
+        String file_path = "input/Original.txt";
         try { // get the size of input file
             File file = new File(file_path);
-            str_Size= (int)file.length();
+            file_size= (int)file.length();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -579,13 +575,13 @@ public class ReferenceDNA {
         long afterTime = System.currentTimeMillis(); // 코드 실행 후 시간
         long secDiffTime = (afterTime - beforeTime) / 1000; //두 시간에 차 계산
         System.out.println("New Method 수행시간 : " + secDiffTime + "s");
-        Accuracy();
+        Accuracy("output/NewRestoreDNA.txt");
 
         // trivial 알고리즘 시간 측정
         beforeTime = System.currentTimeMillis();
         //Trivial(file_path, k, n);
         afterTime = System.currentTimeMillis();
         System.out.println("Trivial Method 수행시간 : " + secDiffTime + "s");
-        Accuracy();
+        Accuracy("output/trivialRestoreDNA.txt");
     }
 }
