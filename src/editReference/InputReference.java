@@ -174,7 +174,7 @@ public class InputReference {
     }
 
 
-    public static void insertionDNA(String FILEPATH) {
+    public static void mutationDNA(String FILEPATH) {
         char myDNA[] = new char[file_size];   // My DNA Reference 저장
         int myDNA_len;                       // My DNA Reference 길이
         char charset[] = new String("ATGC").toCharArray(); // string에 들어갈 charset
@@ -210,9 +210,9 @@ public class InputReference {
             }
         }
 
-        // 위에서 일부분을 변경한 My DNA Reference로 "MyDNA.txt" 생성
+        // 위에서 일부분을 변경한 My DNA Reference로 "MutationMyDNA.txt" 생성
         String myDNA_str = new String(myDNA);
-        File file = new File("refer/insertionMyDNA.txt");
+        File file = new File("refer/MutationMyDNA.txt");
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write(myDNA_str);

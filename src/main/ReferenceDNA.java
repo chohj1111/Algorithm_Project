@@ -431,16 +431,16 @@ public class ReferenceDNA {
         long beforeTime = System.currentTimeMillis(); // 코드 실행 전 시간
         NewAlgorithm(file_path, k, n);
         long afterTime = System.currentTimeMillis(); // 코드 실행 후 시간
-        long secDiffTime = (afterTime - beforeTime) / 1000; //두 시간에 차 계산
-        System.out.println("New Method 수행시간 : " + secDiffTime + "s");
+        long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
+        System.out.println("New Method 수행시간 : " + secDiffTime + "ms");
         Accuracy("output/NewRestoreDNA.txt");
 
         // trivial 알고리즘 시간 측정
         beforeTime = System.currentTimeMillis();
         Trivial(file_path, k, n);
         afterTime = System.currentTimeMillis();
-        secDiffTime = (afterTime - beforeTime) / 1000; //두 시간에 차 계산
-        System.out.println("Trivial Method 수행시간 : " + secDiffTime + "s");
+        secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
+        System.out.println("Trivial Method 수행시간 : " + secDiffTime + "ms");
         Accuracy("output/trivialRestoreDNA.txt");
     }
 }
