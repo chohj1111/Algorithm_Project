@@ -407,7 +407,7 @@ public class ReferenceDNA {
 
         System.out.println("n : 450000");
         //n = sc.nextInt();
-        n = 450000;
+        n = 40000;
 
 
         // 읽을 파일
@@ -419,7 +419,7 @@ public class ReferenceDNA {
             e.printStackTrace();
         }*/
 
-        file_size= 100000;
+        file_size= 1000000;
         String file_path= "input/ReferenceDNA.txt";
 
         InputReference.createRefDNA(); // Reference DNA 생성
