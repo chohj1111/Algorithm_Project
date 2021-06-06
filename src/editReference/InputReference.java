@@ -175,10 +175,10 @@ public class InputReference {
 
 
     public static void mutationDNA(String FILEPATH) {
-        char myDNA[] = new char[file_size];   // My DNA Reference 저장
-        int myDNA_len;                       // My DNA Reference 길이
+        char referenceDNA[] = new char[file_size];   // My DNA Reference 저장
+        int referenceDNA_len;                       // My DNA Reference 길이
         char charset[] = new String("ATGC").toCharArray(); // string에 들어갈 charset
-        int insertion_num = file_size/1000*3;      // My DNA Sequence 생성할 때 원본 sequence와 다른 문자 개수
+        int mutation_num = file_size/10000*6;      // My DNA Sequence 생성할 때 원본 sequence와 다른 문자 개수
 
         // FILEPATH로부터 Reference DNA 입력
         StringBuilder stringBuilder = new StringBuilder();
@@ -193,29 +193,29 @@ public class InputReference {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        myDNA = stringBuilder.toString().toCharArray(); //  convert StringBuilder to char array
+        referenceDNA = stringBuilder.toString().toCharArray(); //  convert StringBuilder to char array
 
-        myDNA_len = myDNA.length;   // myDNA의 길이
+        referenceDNA_len = referenceDNA.length;   // myDNA의 길이
 
         // random seed
         Random r = new Random();
 
         // 임의의 SNP 생성 후 변경하여 My DNA Reference 생성
-        for (int i = 0; i < insertion_num; i++) {
+        for (int i = 0; i < mutation_num; i++) {
             // randomIndex의 원소를 randomChar로 변경
-            int randomIndex = r.nextInt(myDNA_len);
+            int randomIndex = r.nextInt(referenceDNA_len-30);
             for(int j=0;j<30;j++) {
                 char randomChar = charset[r.nextInt(charset.length)];
-                myDNA[randomIndex + j] = randomChar;
+                referenceDNA[randomIndex + j] = randomChar;
             }
         }
 
-        // 위에서 일부분을 변경한 My DNA Reference로 "MutationMyDNA.txt" 생성
-        String myDNA_str = new String(myDNA);
-        File file = new File("refer/MutationMyDNA.txt");
+        // 위에서 일부분을 변경한 My DNA Reference로 "MutationReferenceDNA.txt" 생성
+        String referenceDNA_str = new String(referenceDNA);
+        File file = new File("refer/MutationReferenceDNA.txt");
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.write(myDNA_str);
+            writer.write(referenceDNA_str);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
